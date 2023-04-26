@@ -1,0 +1,342 @@
+<html>
+  <head>
+    <script src="https://cdn.plot.ly/plotly-2.20.0.min.js" charset="utf-8"></script>
+    <script src="main.js"></script>
+      <!--Let browser know website is optimized for mobile-->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- Favicon favicon.png -->
+    <link rel="icon" href="images/favicon.png" type="image/png">
+    <!-- title -->
+    <title>Word Voyage</title>
+    <!-- captcha v3 -->
+    <script src="https://www.google.com/recaptcha/api.js?render=6Lf42bYlAAAAAAd8VmBwuqwfkQloUWu6qh_NjcT5"></script>
+
+    <style>
+      * {
+        font-size: 100%;
+        vertical-align: baseline;
+        background: transparent;
+        font-family: 'Roboto', sans-serif;
+        font-size: 16px;
+        --txt-color: rgb(50, 50, 50);
+        color: var(--txt-color);
+      }
+      html {
+        scroll-behavior: smooth;
+        line-height: 1.5;
+        font-weight: normal;
+        color: rgba(0,0,0,0.87);
+      }
+      body {
+        /* gradient background */
+        /* background: linear-gradient(45deg, #f5f5f5, #bebebe); */
+        width: 100%;
+        margin:0px;
+        font-weight: 300;
+        background-color: #ffffff;
+        --dim-color: #cccccc;
+        --hov-color: black;
+      }
+
+      #container {
+        width: 100%;
+        margin: 0 auto;
+        padding: 20px 0px;
+      }
+      @media only screen and (max-width: 600px) {
+        #container{
+          width: 90%;
+        }
+      }
+      @media only screen and (min-width: 600px) {
+        #container{
+          width: 85%;
+        }
+      }
+      @media only screen and (min-width: 992px) {
+        #container{
+          width: 70%;
+        }
+      }
+
+
+
+      h1 {
+        font-size: 40px;
+        margin: 0px;
+        padding: 0px;
+        margin-top:10px;
+        color: #333;
+      }
+      h2 {
+        font-size: 30px;
+        margin: 0px;
+        padding: 0px;
+        margin-top:10px;
+        color: #333;
+      }
+      #description {
+        font-size: 14px;
+        margin: 0px;
+        padding: 0px;
+        margin-bottom:30px;
+        color: #333;
+      }
+      #float-bar {
+        box-shadow: 5px 6px 16px 1px rgb(186 186 186 / 75%);
+        padding: 5px;
+        border-radius: 7px;
+        transition: all 0.3s ease-in-out;
+      }
+      #search-box-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 40px;
+      }
+      #inp-box {
+        width: 100%;
+        height: 100%;
+        font-size: 16px;
+        padding: 10px;
+        border: none;
+        background-color: transparent;
+      }
+      /* reset inp-box focused border */
+      #inp-box:focus {
+        outline: none;
+      }
+      /* chnage #search-box container style when child #inp-box is focused */
+      #search-box-container:focus-within {
+        /* border: 1px solid var(--hov-color); */
+      }
+
+      #submit-btn {
+        height: 100%;
+        width: 50px;
+        margin: 10px;
+        border: none;
+        background-color: transparent;
+        /* search icon svg background, centered */
+        background-image: url('images/search-icon.svg');
+        background-repeat: no-repeat;
+        background-position: center;
+        background-size: 20px;
+        color:var(--dim-color);
+        cursor: pointer;
+      }
+      #settings-btn {
+        height: 100%;
+        width: 50px;
+        margin: 10px 5px 10px 0px;
+        border: none;
+        background-color: transparent;
+        /* search icon svg background, centered */
+        background-image: url('images/settings-icon.svg');
+        background-repeat: no-repeat;
+        background-position: center;
+        background-size: 20px;
+        color:var(--dim-color);
+        cursor: pointer;
+      }
+      #settings-btn:hover, #submit-btn:hover {
+        color:var(--hov-color);
+      }
+      #settings {
+        display: none;
+        margin-top: 4px;
+      }
+      @keyframes roll-down {
+        0% {
+          transform: translateY(-100%);
+        }
+        100% {
+          transform: translateY(0%);
+        }
+      }
+      
+      /* same style as inp-box */
+      select {
+        font-size: 16px;
+        padding: 10px;
+        border: none;
+        background-color: transparent;
+        border-radius: 0px; 
+      }
+      #color-scale-btn {
+        font-size: 16px;
+        margin: 10px;
+        border: none;
+        background-color: transparent;
+        color:var(--dim-color);
+        cursor: pointer;
+        color:var(--txt-color)
+      }
+      #color-scale-btn:hover {
+        color:var(--hov-color);
+      }
+      /* diabled styling */
+      #color-scale-btn:disabled {
+        color:var(--dim-color);
+        cursor: not-allowed;
+      }
+
+      #map-container{
+        position: relative;
+        width: 100%;
+        height: 500px;
+        margin-top: 44px;
+        /*box shadow hover*/
+      }
+      #map-placeholder {
+        background-image: url('images/map-placeholder.svg');
+        background-repeat: no-repeat;
+        background-position: center;
+        background-size: contain;
+        width: 100%;
+        height: 100%;
+      }
+      #map {
+        width: 100%;
+        height: 100%;
+        display: none;
+        /* fade in animation */
+        animation: fade-in 1.4s ease-out forwards;
+      }
+
+      /* Loading div centered */
+      #loading {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        text-align: center;
+        display: none;
+        animation: fade-in 1.4s ease-out forwards;
+      }
+      @keyframes fade-in {
+        0% {
+          opacity: 0;
+        }
+        100% {
+          opacity: 1;
+        }
+      }
+
+      /* Spinner css */
+      #spinner {
+        width: 48px;
+        height: 48px;
+        display: inline-block;
+        position: relative;
+      }
+      #spinner::after,
+      #spinner::before {
+        content: '';  
+        box-sizing: border-box;
+        width: 48px;
+        height: 48px;
+        border-radius: 50%;
+        background: #565656;
+        position: absolute;
+        left: 0;
+        top: 0;
+        animation: animloader 1s linear infinite;
+      }
+
+      @keyframes animloader {
+        0% {
+          transform: scale(0);
+          opacity: 1;
+        }
+        100% {
+          transform: scale(1);
+          opacity: 0;
+        }
+      }
+    
+      #about {
+        max-width: 100%;
+        width: 800px;
+        margin: 0 auto;
+        margin-top: 70px;
+        padding: 30px;
+        box-shadow: 2px -2px 16px 0px rgb(186 186 186 / 75%);
+        /* padding: 5px; */
+        border-radius: 7px;
+        -webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
+        -moz-box-sizing: border-box;    /* Firefox, other Gecko */
+        box-sizing: border-box;         /* Opera/IE 8+ */
+      }
+      a {
+        text-decoration: none;
+        border-right: 2px solid var(--dim-color);
+        border-bottom: 2px solid var(--dim-color);
+        padding: 0px 3px 3px 0px;
+      }
+    </style>
+  </head>
+<body>
+  <div id="container">
+    <h1>Word Voyage</h1>
+    <div id="description">
+      See how closely AI relates words to each country.
+    </div>
+    <div id="float-bar">
+      <!-- The input textbox, submit button, setting -->
+      <div id="search-box-container">
+        <input type="text" id="inp-box" placeholder="Enter a word or a phrase" />
+        <button id="submit-btn"></button>
+        <button id="settings-btn"></button>
+      </div>
+      <!-- Settings bar -->
+      <div id="settings">
+        <!-- drop down, choose similarity method-->
+        <select id="similarity-method">
+          <option value="cosine">Cosine Similarity</option>
+          <option value="euclidean">Euclidean Similarity</option>
+        </select>
+        <!-- Color scale hide/show button, disabled at first -->
+        <button id="color-scale-btn" disabled>Hide Scale</button>
+      </div>
+    </div>
+    <div id="map-container">
+      <div id="map-placeholder"></div>
+      <div id="map"></div>
+      <div id="loading">
+        <span id="spinner"></span>
+        <div id="status-text"></div>
+      </div>
+    </div>
+    <div id="about">
+      <h2>About</h2>
+      <p>
+        This project was created by <a href="https://www.ubaada.com">ubaada</a>
+      </p>
+      <h3>How does it work?</h3>
+      <p>
+        The AI model generates <a href="https://en.wikipedia.org/wiki/Word_embedding">word embeddings</a> to represent words as vectors.
+        The model has learned to associate numbers with words in a way that similar words have similar vectors.
+        The script then uses a <a href="https://en.wikipedia.org/wiki/Similarity_measure">similarity measure</a> to compare the vectors of the input word and the vectors of the name of each country. 
+        The darker the color, the more similar the word is associated with the country.
+      </p>
+      <h3>Specification</h3>
+      <p>
+        Model: <a href="https://platform.openai.com/docs/guides/embeddings/embedding-models">text-embedding-ada-002</a>
+        <br/>
+        Similarity measure: 
+          <ul>
+            <li><a href="https://en.wikipedia.org/wiki/Cosine_similarity">Cosine Similarity</a></li>
+            <li><a href="https://en.wikipedia.org/wiki/Euclidean_distancey">Euclidean Similarity</a></li>
+          </ul>
+        <br/>
+        Tools:
+          <ul>
+            <li><a href="https://plotly.com/javascript/">Plotly JS</a></li>
+            <li>Vector operations in Vanilla PHP</li>
+          </ul>
+      </p>
+    </div>
+  </div>
+</body>
+</html>
