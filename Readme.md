@@ -8,8 +8,8 @@ Set up subdomain in apache conf
 	   DocumentRoot "/www/example.com"
 
 	    <Directory "/var/www/example.com">
-		AllowOverride All
-		Require all granted
+            AllowOverride All
+            Require all granted
 	    </Directory>
 	</VirtualHost>
 
