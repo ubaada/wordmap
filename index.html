@@ -1,13 +1,33 @@
 <html>
   <head>
+      <!-- Tags which *must* come first in the header -->
+  <meta charset="utf-8">
+
+    <!-- title -->
+    <title>Word Voyage</title>
+  <!-- Facebook preview card -->
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Word Voyage - Word to Country Map" />
+  <meta property="og:description" content="Generate word-to-country relatedness maps with AI word embeddings." />
+  <meta property="og:image" content="https://www.wordvoyage.ubaada.com/images/wordvoyage.png" />
+
+  <!-- Twitter preview card --->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:creator" content="@ubaada">
+  <meta name="twitter:title" content="Word Voyage - Word to Country Map">
+  <meta name="twitter:description" content="Generate word-to-country relatedness maps with AI word embeddings.">
+  <meta name="twitter:image" content="https://www.wordvoyage.ubaada.com/images/wordvoyage.png">
+
+  <!-- Description for search results-->
+  <meta name="description" content="Generate word-to-country relatedness maps with AI word embeddings.">
+
     <script src="https://cdn.plot.ly/plotly-2.20.0.min.js" charset="utf-8"></script>
     <script src="main.js"></script>
       <!--Let browser know website is optimized for mobile-->
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <!-- Favicon favicon.png -->
     <link rel="icon" href="images/favicon.png" type="image/png">
-    <!-- title -->
-    <title>Word Voyage</title>
+
     <!-- captcha v3 -->
     <script src="https://www.google.com/recaptcha/api.js?render=6Lf42bYlAAAAAAd8VmBwuqwfkQloUWu6qh_NjcT5"></script>
 
@@ -229,6 +249,7 @@
         height: 48px;
         display: inline-block;
         position: relative;
+        margin: auto;
       }
       #spinner::after,
       #spinner::before {
@@ -254,7 +275,12 @@
           opacity: 0;
         }
       }
-    
+      #status-text {
+        margin-top: 10px;
+        font-size: 16px;
+        color: #565656;
+        font-family: 'Courier New', Courier, monospace;
+      }
       #about {
         max-width: 100%;
         width: 800px;
@@ -282,6 +308,21 @@
         font-size:12px;
       }
     </style>
+
+    <!-- Google Analytics -->
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <!-- ensure the cookieDomain is set to auto for GA -->
+
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-6YFPNXLP2B"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { dataLayer.push(arguments); }
+    gtag('js', new Date());
+
+    gtag('config', 'G-6YFPNXLP2B', { 'cookieDomain': 'auto' });
+  </script>
+  <!-- End Google Analytics -->
+  
   </head>
 <body>
   <div id="container">

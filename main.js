@@ -1,9 +1,12 @@
 var countryNames = [];
-
+var quotes = [];
+var quoteIntervalID = 0;
 // execuute this code when page loads
 window.onload = function() {
   // load common country names
   loadCountryNames();
+  // load loading quotes
+  loadQuotes();
   // fire drawMap when Submit button is clicked
   document.getElementById('submit-btn').addEventListener('click', drawMap); 
   // show hide settings div when settings-btn is clicked
@@ -37,6 +40,9 @@ function drawMap() {
     // show the spiiner div
     document.getElementById('spinner').style.display = 'block';
     document.getElementById('status-text').innerHTML = '';
+
+    // start showing loading quotes
+    quoteIntervalID = showRandomQuote();
 
     // get the text from the input box
     const text = document.getElementById('inp-box').value;
@@ -121,18 +127,24 @@ function drawMap() {
           // enable color scale button
           document.getElementById('color-scale-btn').disabled = false;
 
+          // stop showing loading quotes
+          clearInterval(quoteIntervalID);
           // hide loading display none
           document.getElementById('loading').style.display = 'none';
           // show map display block
           document.getElementById('map').style.display = 'block';
         })
-        .catch(error => showmsg(error));
+        .catch(error => {
+          // stop showing loading quotes
+          clearInterval(quoteIntervalID);
+          showmsg('Error: ' + error);
+        });
   });
 }
 
 
 
-// puts text response in div with id = "resp"
+// puts error response in div with id = "resp"
 function showmsg(text) {
   // show error in status-text div
   document.getElementById('status-text').innerHTML = text;
@@ -168,4 +180,31 @@ function toggleColorScale() {
     Plotly.restyle("map", {showscale: false});
     document.getElementById('color-scale-btn').innerHTML = 'Show Scale';
   }
+}
+
+// loads loading quotes
+function loadQuotes() {
+  var xhr = new XMLHttpRequest();
+  xhr.open('GET', 'public-data/quotes.txt', true);
+  xhr.onload = function() {
+    if (xhr.status === 200) {
+      quotes = xhr.responseText.split('\n');
+      }
+  };
+  xhr.send();
+}
+
+// shows a random quote in #status-text with 3 second interval
+// until stopped by a function call
+// first quote is shown immediately
+function showRandomQuote() {
+  var quote = quotes[Math.floor(Math.random() * quotes.length)];
+  document.getElementById('status-text').innerHTML = '> ' + quote + '...';
+  var i = setTimeout(function() {
+    var quote = quotes[Math.floor(Math.random() * quotes.length)];
+    document.getElementById('status-text').innerHTML = '> ' + quote + '...';
+  }, 3000);
+  // stop showing quotes by clearing timeout in the upstream function
+  // clearTimeout(i);
+  return i;
 }
