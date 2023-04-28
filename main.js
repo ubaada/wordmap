@@ -49,9 +49,6 @@ function drawMap() {
     document.getElementById('spinner').style.display = 'block';
     document.getElementById('status-text').innerHTML = '';
 
-    // start showing loading quotes
-    quoteIntervalID = showRandomQuote();
-
     // get the text from the input box
     const text = document.getElementById('inp-box').value;
     // get similarity method from similarity-method dropdown
@@ -62,7 +59,10 @@ function drawMap() {
     if (text.trim() === '' || text.length > 200) {
       showmsg('Please enter a valid text (max 200 characters)');
       return;
+
     }
+    // start showing loading quotes
+    quoteIntervalID = showRandomQuote();
 
     siteKey = '6Lf42bYlAAAAAAd8VmBwuqwfkQloUWu6qh_NjcT5';
     // Get a reCAPTCHA v3 token
@@ -208,7 +208,7 @@ function loadQuotes() {
 function showRandomQuote() {
   var quote = quotes[Math.floor(Math.random() * quotes.length)];
   document.getElementById('status-text').innerHTML = '> ' + quote + '...';
-  var i = setTimeout(function() {
+  var i = setInterval(function() {
     var quote = quotes[Math.floor(Math.random() * quotes.length)];
     document.getElementById('status-text').innerHTML = '> ' + quote + '...';
   }, 3000);
