@@ -1,6 +1,7 @@
 var countryNames = [];
 var quotes = [];
 var quoteIntervalID = 0;
+var mymap = null;
 // execuute this code when page loads
 window.onload = function() {
   // load common country names
@@ -27,6 +28,13 @@ window.onload = function() {
       drawMap();
     }
     });
+
+    // load color schemes
+    loadColorSchemes();
+
+    // change color scheme when color scheme picker is changed
+    document.getElementById('color-scheme-picker').addEventListener('change', changeColorScheme);
+    
 };
 
 // draws map based on input text
@@ -82,20 +90,20 @@ function drawMap() {
             similarities.push(parseFloat(similarity));
           });
 
-          
+          var color_scale = document.getElementById('color-scheme-picker').value;
           const data = [{
             type: "choropleth",
             locationmode: "ISO-3",
             locations: countryCodes,
             z: similarities,
             text: countryNames,
-            colorscale: "Blues",
+            colorscale: color_scale,
             reversescale: true,
             colorbar: {
               visible: false
             }
           }];
-          
+          console.log(data);
           // set map size to 100% of #map div
           var h = document.getElementById('map-container').offsetHeight;
           var w = document.getElementById('map-container').offsetWidth;
@@ -115,7 +123,7 @@ function drawMap() {
 
           // var config = {responsive: true}
 
-          Plotly.newPlot("map", data, layout);
+          mymap = Plotly.newPlot("map", data, layout);
 
           // hide color scale from plot if display is mobile
           if (window.innerWidth < 768) {
@@ -207,4 +215,36 @@ function showRandomQuote() {
   // stop showing quotes by clearing timeout in the upstream function
   // clearTimeout(i);
   return i;
+}
+
+// load color schemes from public-data/color-schemes.txt
+// and populate the color-scheme-picker dropdown
+function loadColorSchemes() {
+  var xhr = new XMLHttpRequest();
+  xhr.open('GET', 'public-data/color-schemes.txt', true);
+  xhr.onload = function() {
+    if (xhr.status === 200) {
+      var colorSchemes = xhr.responseText.split('\n');
+      colorSchemes.forEach(colorScheme => {
+        var option = document.createElement("option");
+        // strip return carriage character from color scheme name
+        colorScheme = colorScheme.replace('\r', '');
+        option.text = colorScheme;
+        option.value = colorScheme;
+        document.getElementById('color-scheme-picker').add(option);
+      });
+      // set default color scheme to YlGnBu
+      document.getElementById('color-scheme-picker').value = 'YlGnBu';
+    }
+  };
+  xhr.send();
+}
+
+// change color scheme of map when color scheme picker is changed
+// and if mymap plot is already loaded in map div
+function changeColorScheme() {
+  if (mymap) {
+    var color_scheme = document.getElementById('color-scheme-picker').value;
+    Plotly.restyle("map", {colorscale: color_scheme});
+  }
 }
