@@ -1,6 +1,6 @@
 <?php
 # =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
-# 
+#
 #                     MAIN WORKFLOW
 #
 # =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
@@ -11,16 +11,32 @@
 #     Enable json extension in php.ini
 #     Enable APCu for caching, binary needs to be set up
 
+# Expected POST parameters
+#     text: text to be compared to country embeddings
+#     sim_method: similarity method to be used, cosine or euclidean
+#     negative: whether to use negative embeddings or not
+#     token: captcha token from google recaptcha v3
+
+# check if any of the expected POST parameters are not set or empty
+if (isset($_POST['text']) == false || isset($_POST['sim_method']) == false || isset($_POST['negative']) == false || isset($_POST['token']) == false) {
+    http_response_code(400);
+    die("Missing parameters");
+}
+if (strlen($_POST['text']) == 0 || strlen($_POST['sim_method']) == 0 || strlen($_POST['negative']) == 0 || strlen($_POST['token']) == 0) {
+    http_response_code(400);
+    die("Missing parameters");
+}
+
+# load POST parameters
+$text = htmlspecialchars($_POST['text']);
+$sim_method = htmlspecialchars($_POST['sim_method']);
+$negative = htmlspecialchars($_POST['negative']);
+$token = htmlspecialchars($_POST['token']);
+
 
 verify_captcha();
 
 $prompt_limit = 200;
-# read posted body from the request, 
-# if empty/not set kill the script and return error header
-if (!isset($_POST['text'])) {
-    http_response_code(400);
-    die("Text is empty");
-}
 # sanitize the text input and store in $text
 $text = htmlspecialchars($_POST['text']);
 # kill the script if the text is empty or too long
@@ -31,11 +47,14 @@ if (strlen($text) == 0) {
     http_response_code(400);
     die("Text is too long. Maximum is 200 characters.");
 }
-$sim_method = htmlspecialchars($_POST['sim_method']);
 # read openai api key from the config file
 $openai_api_key = load_openai_key();
 # Get word/sentence embeddings from OpenAI
 $word_embedding = get_embeddings($text, $openai_api_key);
+# if negative is set, get negative embeddings
+if ($negative == "true") {
+    $word_embedding = negate_vector($word_embedding);
+}
 # load $country_codes and $country_embeddings from load_country_embeddings()
 list($country_codes,$country_embeddings) = load_stored_embeddings();
 # calculate similarity between the text and each country embedding using array map
@@ -73,6 +92,7 @@ echo implode("\n", $csv);
 # 4. get_embeddings: get word/sentence embeddings from OpenAI
 # 5. get_cosine_similarity: calculate cosine similarity between two vectors
 # 6. get_euclidean_distance: calculate euclidean distance between two vectors
+# 7. negate_vector: negate a vector
 # =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
 
@@ -228,5 +248,14 @@ function get_euclidean_distance($a, $b) {
         $sum += pow(($a[$i] - $b[$i]), 2);
     }
     return sqrt($sum);
+}
+
+# calculate negation of a vector
+function negate_vector($a) {
+    $result = array();
+    for ($i = 0; $i < count($a); $i++) {
+        $result[$i] = -$a[$i];
+    }
+    return $result;
 }
 ?>

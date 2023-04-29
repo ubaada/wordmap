@@ -181,7 +181,14 @@
 
     #settings {
       display: none;
-      margin-top: 4px;
+      align-items: center;
+      height: 40px;
+      flex-wrap: wrap;
+      height: fit-content;
+    }
+    /* select all children of #settings */
+    #settings * {
+      font-size: 12px;
     }
 
     @keyframes roll-down {
@@ -196,31 +203,26 @@
 
     /* same style as inp-box */
     select {
-      font-size: 16px;
       padding: 10px;
       border: none;
       background-color: transparent;
       border-radius: 0px;
     }
 
-    #color-scale-btn {
-      font-size: 16px;
-      margin: 10px;
+    /* style all checkboxes */
+    input[type="checkbox"] {
+      display: none;
+    }
+    /* select sibling of input[type="checkbox"] */
+    input[type="checkbox"]+label {
+      padding: 10px;
       border: none;
-      background-color: transparent;
-      color: var(--dim-color);
+      border-radius: 3px;
       cursor: pointer;
-      color: var(--txt-color)
     }
-
-    #color-scale-btn:hover {
-      color: var(--hov-color);
-    }
-
-    /* diabled styling */
-    #color-scale-btn:disabled {
-      color: var(--dim-color);
-      cursor: not-allowed;
+    /* checked style */
+    input[type="checkbox"]:checked+label {
+      background-color: var(--dim-color);
     }
 
     #map-container {
@@ -416,11 +418,19 @@
           <option value="cosine">Cosine Similarity</option>
           <option value="euclidean">Euclidean Similarity</option>
         </select>
-        <!-- Color scale hide/show button, disabled at first -->
-        <button id="color-scale-btn" disabled>Hide Scale</button>
+        <!-- Checkbox for showing/hiding color legend -->
+        <div id="color-legend">
+          <input type="checkbox" id="color-legend-checkbox" checked />
+          <label for="color-legend-checkbox">Scale</label>
+        </div>
         <!-- drop down, choose color-scheme-->
         <select id="color-scheme-picker">
         </select>
+        <!-- Checkbox: negate vector -->
+        <div id="negative-vector">
+          <input type="checkbox" id="negative-vector-checkbox"/>
+          <label for="negative-vector-checkbox">Negative</label>
+        </div>
       </div>
     </div>
     <div id="map-container">

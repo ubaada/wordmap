@@ -13,13 +13,19 @@ window.onload = function() {
   // show hide settings div when settings-btn is clicked
   document.getElementById('settings-btn').addEventListener('click', function() {
     if (document.getElementById('settings').style.display === 'none') {
-      document.getElementById('settings').style.display = 'block';
+      document.getElementById('settings').style.display = 'flex';
     } else {
       document.getElementById('settings').style.display = 'none';
     }
   });  
-  // show hide color scale when color-scale-btn is clicked
-  document.getElementById('color-scale-btn').addEventListener('click', toggleColorScale);
+  // show hide color scale when color-legend-checkbox checkbox is checked/unchecked
+  document.getElementById('color-legend-checkbox').addEventListener('change', toggleColorScale);
+  // unchecked by default if display is mobile
+  if (window.innerWidth < 600) {
+    document.getElementById('color-legend-checkbox').checked = false;
+  }
+
+
 
   // fire drawMap when Enter key is pressed
   document.getElementById("inp-box").addEventListener("keyup", function(event) {
@@ -27,13 +33,13 @@ window.onload = function() {
       event.preventDefault();
       drawMap();
     }
-    });
+  });
 
-    // load color schemes
-    loadColorSchemes();
+  // load color schemes
+  loadColorSchemes();
 
-    // change color scheme when color scheme picker is changed
-    document.getElementById('color-scheme-picker').addEventListener('change', changeColorScheme);
+  // change color scheme when color scheme picker is changed
+  document.getElementById('color-scheme-picker').addEventListener('change', changeColorScheme);
     
 };
 
@@ -53,13 +59,12 @@ function drawMap() {
     const text = document.getElementById('inp-box').value;
     // get similarity method from similarity-method dropdown
     const similarityMethod = document.getElementById('similarity-method').value;
-    // captcha v3 token
-    const token = '1234567890';
+    // negative set to "true" if negative-vector-checkbox is checked
+    const negative = document.getElementById('negative-vector-checkbox').checked;
     // if text is empty or contains more than 200 characters, show error
     if (text.trim() === '' || text.length > 200) {
       showmsg('Please enter a valid text (max 200 characters)');
       return;
-
     }
     // start showing loading quotes
     quoteIntervalID = showRandomQuote();
@@ -72,6 +77,7 @@ function drawMap() {
         const formData = new FormData();
         formData.append('text', text);
         formData.append('sim_method', similarityMethod);
+        formData.append('negative', negative);
         formData.append('token', token);
 
         // send post data to calc.php including captcha token
@@ -103,7 +109,6 @@ function drawMap() {
               visible: false
             }
           }];
-          console.log(data);
           // set map size to 100% of #map div
           var h = document.getElementById('map-container').offsetHeight;
           var w = document.getElementById('map-container').offsetWidth;
@@ -124,17 +129,7 @@ function drawMap() {
           // var config = {responsive: true}
 
           mymap = Plotly.newPlot("map", data, layout);
-
-          // hide color scale from plot if display is mobile
-          if (window.innerWidth < 768) {
-            Plotly.restyle("map", {showscale: false});
-            // change text of color-scale-btn to show color scale
-            document.getElementById('color-scale-btn').innerHTML = 'Show Scale';
-          }
           
-          // enable color scale button
-          document.getElementById('color-scale-btn').disabled = false;
-
           // stop showing loading quotes
           clearInterval(quoteIntervalID);
           // hide loading display none
@@ -179,14 +174,15 @@ function loadCountryNames() {
 };
 
 
-// show/hide color scale
+// show/hide color scale if color-legend-checkbox is checked/unchecked
+// check if map is not null first
 function toggleColorScale() {
-  if (document.getElementById('color-scale-btn').innerHTML === 'Show Scale') {
-    Plotly.restyle("map", {showscale: true});
-    document.getElementById('color-scale-btn').innerHTML = 'Hide Scale';
-  } else {
-    Plotly.restyle("map", {showscale: false});
-    document.getElementById('color-scale-btn').innerHTML = 'Show Scale';
+  if (mymap) {
+    if (document.getElementById('color-legend-checkbox').checked) {
+      Plotly.restyle("map", {showscale: true});
+    } else {
+      Plotly.restyle("map", {showscale: false});
+    }
   }
 }
 
