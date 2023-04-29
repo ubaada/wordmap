@@ -129,7 +129,12 @@ function drawMap() {
           // var config = {responsive: true}
 
           mymap = Plotly.newPlot("map", data, layout);
+
+          // hide color scale from plot if color-legend-checkbox is unchecked
+          scaleEnabled = document.getElementById('color-legend-checkbox').checked;
+          Plotly.restyle("map", {showscale: scaleEnabled});
           
+
           // stop showing loading quotes
           clearInterval(quoteIntervalID);
           // hide loading display none
