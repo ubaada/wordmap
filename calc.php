@@ -168,27 +168,7 @@ function get_embeddings($text, $key) {
     $url = "https://api.openai.com/v1/embeddings";
     $data = array(
         "input" => $text,
-        "model" => "text-embedding-ada-002"
-    );
-    $payload = json_encode($data);
-
-    $headers = array(
-        "Authorization: Bearer $key",
-        "Content-Type: application/json"
-    );
-    # extension=php_curl.dll needs to be enabled in php.ini
-    $ch = curl_init($url);
-
-    curl_setopt($ch, CURLOPT_POST, true);
-    curl_setopt($ch, CURLOPT_POSTFIELDS, $payload);
-    curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-
-    $result = curl_exec($ch);
-    $url = "https://api.openai.com/v1/embeddings";
-    $data = array(
-        "input" => $text,
-        "model" => "text-embedding-ada-002"
+        "model" => "text-embedding-3-small"
     );
     $payload = json_encode($data);
 

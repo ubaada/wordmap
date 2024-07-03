@@ -6,19 +6,19 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 
   <!-- title -->
-  <title>Word Voyage</title>
+  <title>Word Map</title>
   <!-- Facebook preview card -->
   <meta property="og:type" content="website" />
   <meta property="og:title" content="Word Voyage - Word to Country Map" />
   <meta property="og:description" content="Generate word-to-country relatedness maps with AI word embeddings." />
-  <meta property="og:image" content="https://www.wordvoyage.ubaada.com/images/wordvoyage.png" />
+  <meta property="og:image" content="https://www.wordmap.ubaada.com/images/wordvoyage.png" />
 
   <!-- Twitter preview card --->
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:creator" content="@ubaada">
   <meta name="twitter:title" content="Word Voyage - Word to Country Map">
   <meta name="twitter:description" content="Generate word-to-country relatedness maps with AI word embeddings.">
-  <meta name="twitter:image" content="https://www.wordvoyage.ubaada.com/images/wordvoyage.png">
+  <meta name="twitter:image" content="https://www.wordmap.ubaada.com/images/wordvoyage.png">
 
   <!-- Description for search results-->
   <meta name="description" content="Generate word-to-country relatedness maps with AI word embeddings.">
@@ -401,7 +401,7 @@
 
 <body>
   <div id="container">
-    <h1>Word Voyage</h1>
+    <h1>Word Map</h1>
     <div id="description">
       See how closely AI relates words to each country.
     </div>
@@ -445,7 +445,7 @@
     <div id="about">
       <h2>About</h2>
       <p>
-        This project was created by <a href="https://www.ubaada.com">Ubaada</a>. The code is <a href="https://github.com/ubaada/wordvoyage">available on GitHub</a>.
+        This project was created by <a href="https://www.ubaada.com">Ubaada</a>. The code is <a href="https://github.com/ubaada/wordmap">available on GitHub</a>.
       </p>
       <h3>How does it work?</h3>
       <p>
@@ -461,7 +461,8 @@
       <h3>Quirks</h3>
       <p>
         <ul>
-          <li>Chad appears close to almost every word likely because it's a common English name.</li>
+          <li><s>Chad appears close to almost every word likely because it's a common English name.</s><br/>
+          (Fixed by appending country names with "The country of" and embedding that string instead.)</li>
           <li>Similarly, Iraq appears close to almost every word probably because of abundance of WoT articles in the training data.</li>
         </ul>
       </p>
