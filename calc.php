@@ -103,7 +103,7 @@ function verify_captcha() {
 		die("Captcha verification not provided.");
 	}
     $token = htmlspecialchars($_POST['token']);
-    $secretKey = file_get_contents('../word-voyage-data/pvt-v3-key');
+    $secretKey = file_get_contents('../word-map-data/pvt-v3-key');
 
     $ch = curl_init("https://www.google.com/recaptcha/api/siteverify?secret=".$secretKey."&response=".$token);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -126,7 +126,7 @@ function load_openai_key() {
     if (apcu_exists('openai_api_key')) {
         return apcu_fetch('openai_api_key');
     } else {
-        return file_get_contents('../word-voyage-data/wv-openai-key.txt');
+        return file_get_contents('../word-map-data/wv-openai-key.txt');
     }
 }
 
@@ -147,7 +147,7 @@ function load_stored_embeddings() {
         # json is stored as {'country_name': 'embedding','country_name': 'embedding'}...
         $json_text = "";
         # error check while reading file, die if error and clear cache
-        if (!$json_text = file_get_contents('../word-voyage-data/embeddings_with_code.json')) {
+        if (!$json_text = file_get_contents('../word-map-data/embeddings_with_code.json')) {
             apcu_clear_cache();
             die("Error on the server side :(");
         }
