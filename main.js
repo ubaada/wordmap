@@ -12,10 +12,10 @@ window.onload = function() {
   document.getElementById('submit-btn').addEventListener('click', drawMap); 
   // show hide settings div when settings-btn is clicked
   document.getElementById('settings-btn').addEventListener('click', function() {
-    if (document.getElementById('settings').style.display === 'none') {
-      document.getElementById('settings').style.display = 'flex';
-    } else {
+    if (document.getElementById('settings').style.display === 'flex') {
       document.getElementById('settings').style.display = 'none';
+    } else {
+      document.getElementById('settings').style.display = 'flex';
     }
   });  
   // show hide color scale when color-legend-checkbox checkbox is checked/unchecked
