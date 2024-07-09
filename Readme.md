@@ -14,10 +14,10 @@ Set up subdomain in apache conf
 	</VirtualHost>
 
 	<VirtualHost *:80>
-	    ServerName wordvoyage.example.com
-	    DocumentRoot "/var/www/wordvoyage.example.com"
-	    ErrorLog "logs/wordvoyage-error_log"
-		<Directory "/var/www/wordvoyage.ubaada.com">
+	    ServerName wordmap.example.com
+	    DocumentRoot "/var/www/wordmap.example.com"
+	    ErrorLog "logs/wordmap-error_log"
+		<Directory "/var/www/wordmap.example.com">
 			Require all granted
 		</Directory>
 	</VirtualHost>
