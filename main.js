@@ -7,7 +7,7 @@ window.onload = function() {
   // load common country names
   loadCountryNames();
   // load loading quotes
-  loadQuotes();
+  // loadQuotes();
   // fire drawMap when Submit button is clicked
   document.getElementById('submit-btn').addEventListener('click', drawMap); 
   // show hide settings div when settings-btn is clicked
@@ -207,6 +207,7 @@ function loadQuotes() {
 // until stopped by a function call
 // first quote is shown immediately
 function showRandomQuote() {
+  return 0; // disable quotes
   var quote = quotes[Math.floor(Math.random() * quotes.length)];
   document.getElementById('status-text').innerHTML = '> ' + quote + '...';
   var i = setInterval(function() {
