@@ -69,7 +69,7 @@ function drawMap() {
     // start showing loading quotes
     quoteIntervalID = showRandomQuote();
 
-    siteKey = '6Lf42bYlAAAAAAd8VmBwuqwfkQloUWu6qh_NjcT5';
+    siteKey = '6Lc50swqAAAAAGMWN3MzVVzfQCMceWJzznMbGhCZ';
     // Get a reCAPTCHA v3 token
     grecaptcha.execute(siteKey, {action: 'submit'})
       .then(function(token) {
