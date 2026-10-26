@@ -1,0 +1,65 @@
+name: Build and deploy container
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  packages: write
+
+concurrency:
+  group: container-main
+  cancel-in-progress: false
+
+env:
+  IMAGE: ghcr.io/${{ github.repository }}
+  DOCKER_BUILD_RECORD_UPLOAD: "false"
+
+jobs:
+  publish:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: docker/setup-buildx-action@8d2750c68a42422c14e847fe6c8ac0403b4cbd6f # v3
+      - uses: docker/login-action@c94ce9fb468520275223c153574b00df6fe4bcc9 # v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - uses: docker/build-push-action@10e90e3645eae34f1e60eeb005ba3a3d33f178e8 # v6
+        id: build
+        with:
+          context: .
+          platforms: linux/amd64
+          push: true
+          tags: ${{ env.IMAGE }}:${{ github.sha }}
+          labels: org.opencontainers.image.source=https://github.com/${{ github.repository }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+      - name: Deploy exact image
+        if: vars.CONTAINER_DEPLOY_ENABLED == 'true'
+        env:
+          DEPLOY_HOST: ${{ vars.CONTAINER_HOST }}
+          DEPLOY_HOST_KEY: ${{ vars.CONTAINER_HOST_KEY }}
+          DEPLOY_KEY: ${{ secrets.CONTAINER_SSH_KEY }}
+          GHCR_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REGISTRY_USER: ${{ github.actor }}
+          IMAGE_DIGEST: ${{ steps.build.outputs.digest }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          umask 077
+          test -n "$DEPLOY_HOST" && test -n "$DEPLOY_HOST_KEY" && test -n "$DEPLOY_KEY"
+          key=$(mktemp)
+          hosts=$(mktemp)
+          trap 'rm -f "$key" "$hosts"' EXIT
+          printf '%s\n' "$DEPLOY_KEY" > "$key"
+          printf 'ubaada-container-host %s\n' "$DEPLOY_HOST_KEY" > "$hosts"
+          printf '%s' "$GHCR_TOKEN" | ssh -T -i "$key" \
+            -o BatchMode=yes -o ConnectTimeout=15 -o StrictHostKeyChecking=yes \
+            -o HostKeyAlias=ubaada-container-host -o UserKnownHostsFile="$hosts" \
+            "deploy@$DEPLOY_HOST" "deploy $IMAGE_DIGEST $REGISTRY_USER"

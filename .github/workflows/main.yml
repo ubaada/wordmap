@@ -15,4 +15,4 @@ jobs:
         remote-user: ${{ secrets.SSH_USERNAME }}
         private-ssh-key: ${{ secrets.SSH_KEY }}
         destination-path: ${{ secrets.DEST_DIR }}
-        rsync-options: --archive --verbose --compress --human-readable --progress --delete-after --exclude=.git* --exclude=.git/ --exclude=README.md --exclude=readme.md --exclude=.gitignore
+        rsync-options: --archive --verbose --compress --human-readable --progress --delete-after --exclude=.git* --exclude=.git/ --exclude=README.md --exclude=readme.md --exclude=.gitignore --exclude=/Dockerfile --exclude=/.dockerignore --exclude=/docker/

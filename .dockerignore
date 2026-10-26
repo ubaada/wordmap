@@ -1,0 +1,10 @@
+.git
+.github
+.env
+.env.*
+**/*.key
+**/*.pem
+**/*.db
+**/*.sqlite*
+**/*cred*.json
+Readme.md
