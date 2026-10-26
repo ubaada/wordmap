@@ -1,0 +1,16 @@
+.env
+.env.*
+!.env.example
+secrets/
+data/
+state/
+word-map-data/
+*.pem
+*.key
+*.p12
+*.pfx
+*.db
+*.db-*
+*.sqlite*
+*-cred.json
+*credentials*.json

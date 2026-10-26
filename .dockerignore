@@ -8,3 +8,7 @@
 **/*.sqlite*
 **/*cred*.json
 Readme.md
+secrets
+data
+state
+word-map-data
